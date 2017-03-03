@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 # Creates a new go-agent with the ID you specify as forst argument
 AGENTID=$1
 if [ A == A${AGENTID} ]
@@ -13,11 +14,11 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-echo OK
+cp /etc/init.d/go-agent /etc/init.d/go-agent-${AGENTID}
+sed -i 's/# Provides: go-agent$/# Provides: go-agent-${AGENTID}/g' /etc/init.d/go-agent-${AGENTID}
+ln -s /usr/share/go-agent /usr/share/go-agent-${AGENTID}
+cp -p /etc/default/go-agent /etc/default/go-agent-${AGENTID}
+mkdir /var/{lib,log}/go-agent-${AGENTID}
+chown go:go /var/{lib,log}/go-agent-${AGENTID}
 
-#cp /etc/init.d/go-agent /etc/init.d/go-agent-${AGENTID}
-#sed -i 's/# Provides: go-agent$/# Provides: go-agent-${AGENTID}/g' /etc/init.d/go-agent-${AGENTID}
-#ln -s /usr/share/go-agent /usr/share/go-agent-${AGENTID}
-#cp -p /etc/default/go-agent /etc/default/go-agent-${AGENTID}
-#mkdir /var/{lib,log}/go-agent-${AGENTID}
-#chown go:go /var/{lib,log}/go-agent-${AGENTID}
+echo OK
